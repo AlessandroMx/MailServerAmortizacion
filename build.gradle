@@ -1,0 +1,62 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+def COMPONENT_VERSION = '1.1.0'
+def CONF_FOLDER = 'env/dev'
+def AXIS2_VERSION = '1.7.8'
+def SPRING_VERSION="3.0.5.RELEASE"
+def JBOSS_HOME="/opt/jboss-4.2.3.GA"
+
+dependencies {
+    compile "org.springframework:spring-jms:${SPRING_VERSION}",
+            "org.springframework:spring-context-support:${SPRING_VERSION}",
+			"org.springframework:spring-web:3.0.5.RELEASE",
+			'org.apache.xmlbeans:xmlbeans:2.6.0',
+			group: 'javax.mail', name: 'mail', version: '1.4.1',
+			files("lib/credit-1.0.0.jar")
+    providedCompile group: 'jboss', name: 'jboss-j2ee' , version:'4.2.2.GA',
+    "log4j:log4j:1.2.14"
+    testCompile 'junit:junit:4.12'
+}
+
+war {
+	archiveName "MailServer-${COMPONENT_VERSION}.war"
+	from("${CONF_FOLDER}") {
+		into "WEB-INF/classes"
+		include "*.properties"
+	}
+	webInf {
+		from ("${CONF_FOLDER}") {
+			include "*.xml"
+		}
+	}
+}
+
+compileJava.dependsOn {
+	[clean]
+}
+
+// Tarea para copiar temporalmente a una carperta lib las dependencias.
+task copyCompileLibs(type: Copy) {
+    into "libAxis2"
+    from configurations.compile
+}
+
+task deploy(type: Copy, dependsOn: war) {
+	into "${JBOSS_HOME}/server/default/deploy"
+	from "build/libs"
+}
+
+
+
+
+
+
+
+

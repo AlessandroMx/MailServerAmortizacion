@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  
+    xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xmlns:jms="http://www.springframework.org/schema/jms"  
+    xmlns:p="http://www.springframework.org/schema/p"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans   
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+    http://www.springframework.org/schema/jms  
+    http://www.springframework.org/schema/jms/spring-jms-3.0.xsd">
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:reader-conf.properties</value>
+                <value>${READER_SPRING_PROPERTIES_PATH}/reader-conf.properties</value>
+            </list>
+        </property>
+    </bean> 
+    <bean id="consumerSpringContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="messageListener" ref="consumerSpringListener"/>
+        <property name="connectionFactory" ref="jndiConnectionFactory"/>
+        <property name="concurrentConsumers" value="${consumer.spring.jms.concurrent.consumers}"/>
+        <property name="maxConcurrentConsumers" value="${consumer.spring.jms.max.concurrent.consumers}"/>
+        <property name="destination" ref="inQueue"/>
+        <property name="autoStartup" value="true"/>
+    </bean> 
+
+    <bean id="consumerSpringListener" class="edu.itq.soa.jms.ConsumerSpringListener">
+    	<property name="jmsSender" ref="jmsSender"/>
+    </bean> 
+    
+    <bean id="jndiConnectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
+    	<property name="jndiTemplate" ref="jndiTemplate"/>
+    	<property name="jndiName" value="java:ConnectionFactory"/>
+    </bean> 
+
+    <bean id="jndiTemplate" class="org.springframework.jndi.JndiTemplate">
+    	<property name="environment">
+    		<props>
+    			<prop key="java.naming.factory.initial">org.jnp.interfaces.NamingContextFactory</prop>
+    			<prop key="java.naming.provider.url">${consumer.spring.jms.jndi.url}</prop>
+    			<prop key="java.naming.factory.url.pkgs">org.jnp.interfaces:org.jboss.naming</prop>
+    		</props>
+    	</property>
+    </bean> 
+
+    <bean id="inQueue" class="org.springframework.jndi.JndiObjectFactoryBean">
+    	<property name="jndiTemplate" ref="jndiTemplate"/>
+    	<property name="jndiName" value="${consumer.spring.jms.queue.name}"/>
+    </bean> 
+    
+    <bean id="jmsSender" class="edu.itq.soa.jms.JmsSender">
+    	<property name="connectionFactory" ref="jndiConnectionFactory"/>
+    	<property name="destinationResolver" ref="jndiDestinationResolver"/>
+    </bean>
+
+    <bean id="jndiDestinationResolver" 
+    		class="org.springframework.jms.support.destination.JndiDestinationResolver">
+    	<property name="jndiTemplate" ref="jndiTemplate"/>
+    	<property name="cache" value="true"/>
+    </bean>
+</beans>
+
+
+
+
+
+
+
+
+
+
