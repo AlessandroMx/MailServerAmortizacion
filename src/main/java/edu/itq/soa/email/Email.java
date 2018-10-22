@@ -11,12 +11,12 @@ import edu.itq.soa.credit.TablaAmortizacion.Tabla;
 public class Email {
 
     public static void createMail(String nombres, String apellidoPat,
-            String apellidoMat, Tabla tabla) {
+            String apellidoMat, String correo, Tabla tabla) {
 
         // Datos del correo a utilizar
         final String fromEmail = "usuario.funcional.soa@gmail.com";
         final String password = "ufspassword";
-        final String toEmail = "geras.sport@gmail.com";
+        final String toEmail = correo;
 
         System.out.println("Empezando a generar correo");
 

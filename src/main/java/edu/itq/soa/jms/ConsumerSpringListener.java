@@ -28,13 +28,14 @@ public class ConsumerSpringListener implements MessageListener {
                     .getClient().getApellidoPaterno();
             String apellidoMaternoUsuario = respDoc.getCreditResponse()
                     .getClient().getApellidoMaterno();
+            String correo = respDoc.getCreditResponse().getClient().getCorreo();
 
             System.out
                     .println(respDoc.getCreditResponse().getTabla().getTabla());
 
             // Enviar correo
             Email.createMail(nombreUsuario, apellidoPaternoUsuario,
-                    apellidoMaternoUsuario,
+                    apellidoMaternoUsuario, correo,
                     respDoc.getCreditResponse().getTabla().getTabla());
 
         } catch (Exception e) {
