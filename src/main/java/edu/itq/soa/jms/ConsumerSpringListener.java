@@ -30,13 +30,17 @@ public class ConsumerSpringListener implements MessageListener {
                     .getClient().getApellidoMaterno();
             String correo = respDoc.getCreditResponse().getClient().getCorreo();
 
-            System.out
-                    .println(respDoc.getCreditResponse().getTabla().getTabla());
-
-            // Enviar correo
-            Email.createMail(nombreUsuario, apellidoPaternoUsuario,
-                    apellidoMaternoUsuario, correo,
-                    respDoc.getCreditResponse().getTabla().getTabla());
+            if (respDoc.getCreditResponse().getTabla() != null) {
+                System.out.println(
+                        respDoc.getCreditResponse().getTabla().getTabla());
+                // Enviar correo
+                Email.createMail(nombreUsuario, apellidoPaternoUsuario,
+                        apellidoMaternoUsuario, correo,
+                        respDoc.getCreditResponse().getTabla().getTabla());
+            } else {
+                Email.createMail(nombreUsuario, apellidoPaternoUsuario,
+                        apellidoMaternoUsuario, correo, null);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -68,7 +68,7 @@ public class EmailUtil {
         String htmlTablaContenido = "";
         String htmlBody = "";
         
-        if (tabla.getRegistroArray() != null & tabla.getRegistroArray().length >= 1) {
+        if (tabla != null) {
             for (Tabla.Registro registro : tabla.getRegistroArray()) {
                 htmlTablaContenido += String.format(
                         "<tr><td>%d</td><td>%.2f</td><td>%.2f</td><td>%.2f</td><td>%.2f</td><td>%.2f</td></tr>",
